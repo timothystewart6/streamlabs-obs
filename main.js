@@ -270,7 +270,8 @@ function startApp() {
     // }, 10 * 1000);
 
   }
-
+  
+  getObs().IPC.ConnectOrHost("slobs");
   // Initialize various OBS services
   getObs().SetWorkingDirectory(
     path.join(app.getAppPath().replace('app.asar', 'app.asar.unpacked') + 
