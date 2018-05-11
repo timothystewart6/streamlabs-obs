@@ -193,6 +193,7 @@ function startApp() {
     require('node-libuiohook').stopHook();
     session.defaultSession.flushStorageData();
     getObs().OBS_API_destroyOBS_API();
+    getObs().IPC.disconnect();
     app.quit();
   });
 
