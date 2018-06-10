@@ -1,5 +1,5 @@
 import { StatefulService, mutation } from 'services/stateful-service';
-import { ObsApiService, EOutputCode } from 'services/obs-api';
+import { NodeObs, EOutputCode } from '../../../obs-api';
 import { Inject } from 'util/injector';
 import moment from 'moment';
 import { padStart } from 'lodash';
@@ -40,7 +40,6 @@ interface IOBSOutputSignalInfo {
 
 export class StreamingService extends StatefulService<IStreamingServiceState>
   implements IStreamingServiceApi {
-  @Inject() obsApiService: ObsApiService;
   @Inject() settingsService: SettingsService;
   @Inject() windowsService: WindowsService;
   @Inject() usageStatisticsService: UsageStatisticsService;
@@ -62,7 +61,7 @@ export class StreamingService extends StatefulService<IStreamingServiceState>
   };
 
   init() {
-    this.obsApiService.nodeObs.OBS_service_connectOutputSignals(
+    NodeObs.OBS_service_connectOutputSignals(
       (info: IOBSOutputSignalInfo) => {
         this.handleOBSOutputSignal(info);
       }
@@ -106,7 +105,7 @@ export class StreamingService extends StatefulService<IStreamingServiceState>
       this.powerSaveId = electron.remote.powerSaveBlocker.start(
         'prevent-display-sleep'
       );
-      this.obsApiService.nodeObs.OBS_service_startStreaming();
+      NodeObs.OBS_service_startStreaming();
 
       const recordWhenStreaming = this.settingsService.state.General
         .RecordWhenStreaming;
@@ -134,7 +133,7 @@ export class StreamingService extends StatefulService<IStreamingServiceState>
       if (this.powerSaveId)
         electron.remote.powerSaveBlocker.stop(this.powerSaveId);
 
-      this.obsApiService.nodeObs.OBS_service_stopStreaming(false);
+      NodeObs.OBS_service_stopStreaming(false);
 
       const keepRecording = this.settingsService.state.General
         .KeepRecordingWhenStreamStops;
@@ -149,7 +148,7 @@ export class StreamingService extends StatefulService<IStreamingServiceState>
     }
 
     if (this.state.streamingStatus === EStreamingState.Ending) {
-      this.obsApiService.nodeObs.OBS_service_stopStreaming(true);
+      NodeObs.OBS_service_stopStreaming(true);
       return;
     }
   }
@@ -170,12 +169,12 @@ export class StreamingService extends StatefulService<IStreamingServiceState>
 
   toggleRecording() {
     if (this.state.recordingStatus === ERecordingState.Recording) {
-      this.obsApiService.nodeObs.OBS_service_stopRecording();
+      NodeObs.OBS_service_stopRecording();
       return;
     }
 
     if (this.state.recordingStatus === ERecordingState.Offline) {
-      this.obsApiService.nodeObs.OBS_service_startRecording();
+      NodeObs.OBS_service_startRecording();
       return;
     }
   }

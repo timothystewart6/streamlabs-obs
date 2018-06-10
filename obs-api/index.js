@@ -1,8 +1,6 @@
 "use strict";
 exports.__esModule = true;
-var electron = window['require']('electron');
-var remote = electron.remote;
-var obs = remote.require('obs-studio-node');
+var obs = window['require']('obs-studio-node');
 /* Convenient paths to modules */
 exports.DefaultD3D11Path = obs.DefaultD3D11Path;
 exports.DefaultDrawPluginPath = obs.DefaultDrawPluginPath;
@@ -23,3 +21,4 @@ exports.ModuleFactory = obs.ModuleFactory;
 exports.addItems = obs.addItems;
 exports.createSources = obs.createSources;
 exports.getSourcesSize = obs.getSourcesSize;
+exports.NodeObs = obs;

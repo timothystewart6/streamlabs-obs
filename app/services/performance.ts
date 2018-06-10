@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { Subject } from 'rxjs/Subject';
 
 import { StatefulService, mutation } from './stateful-service';
-import { nodeObs } from './obs-api';
+import * as obs from '../../obs-api';
 import electron from 'electron';
 
 interface IPerformanceState {
@@ -38,7 +38,7 @@ export class PerformanceService extends StatefulService<IPerformanceState> {
 
   init() {
     this.intervalId = window.setInterval(() => {
-      const stats: IPerformanceState = nodeObs.OBS_API_getPerformanceStatistics();
+      const stats: IPerformanceState = obs.NodeObs.OBS_API_getPerformanceStatistics();
       if (stats.percentageDroppedFrames) {
         this.droppedFramesDetected.next(stats.percentageDroppedFrames / 100);
       }

@@ -9,7 +9,7 @@ import Vue from 'vue';
 import URI from 'urijs';
 
 import { createStore } from './store';
-import { ObsApiService } from './services/obs-api';
+import { NodeObs } from '../obs-api';
 import { IWindowOptions, WindowsService } from './services/windows';
 import { AppService } from './services/app';
 import { ServicesManager } from './services-manager';
@@ -93,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const servicesManager: ServicesManager = ServicesManager.instance;
   const windowsService: WindowsService = WindowsService.instance;
   const i18nService: I18nService = I18nService.instance;
-  const obsApiService = ObsApiService.instance;
   const windowId = Utils.getCurrentUrlParams().windowId;
 
   if (Utils.isMainWindow()) {
@@ -106,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     servicesManager.listenMessages();
   }
 
-  window['obs'] = obsApiService.nodeObs;
+  window['obs'] = NodeObs;
 
   storePromise.then(async store => {
 

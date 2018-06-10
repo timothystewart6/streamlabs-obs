@@ -459,56 +459,6 @@ const nodeObsVirtualMethods = {
 
 };
 
-// These are called constantly and dirty up the logs.
-// They can be commented out of this list on the rare
-// occasional that they are useful in the log output.
-const filteredObsApiMethods = [
-  'OBS_content_getSourceSize',
-  'OBS_content_getSourceFlags',
-  'OBS_API_getPerformanceStatistics'
-];
-
-// Proxy node OBS calls
-ipcMain.on('obs-apiCall', (event, data) => {
-  let retVal;
-  const shouldLog = !filteredObsApiMethods.includes(data.method);
-
-  if (shouldLog) log('OBS API CALL', data);
-
-  const mappedArgs = data.args.map(arg => {
-    const isCallbackPlaceholder = (typeof arg === 'object') && arg && arg.__obsCallback;
-
-    if (isCallbackPlaceholder) {
-      return (...args) => {
-        if (!event.sender.isDestroyed()) {
-          event.sender.send('obs-apiCallback', {
-            id: arg.id,
-            args
-          });
-        }
-      };
-    }
-
-    return arg;
-  });
-
-  if (nodeObsVirtualMethods[data.method]) {
-    retVal = nodeObsVirtualMethods[data.method].apply(null, mappedArgs);
-  } else {
-    retVal = getObs()[data.method](...mappedArgs);
-  }
-
-  if (shouldLog) log('OBS RETURN VALUE', retVal);
-
-  // electron ipc doesn't like returning undefined, so
-  // we return null instead.
-  if (retVal == null) {
-    retVal = null;
-  }
-
-  event.returnValue = retVal;
-});
-
 // Used for guaranteeing unique ids for objects in the vuex store
 ipcMain.on('getUniqueId', event => {
   event.returnValue = uuid();
