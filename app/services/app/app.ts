@@ -20,6 +20,7 @@ import { FileManagerService } from 'services/file-manager';
 import { PatchNotesService } from 'services/patch-notes';
 import { ProtocolLinksService } from 'services/protocol-links';
 import { WindowsService } from 'services/windows';
+import * as obs from '../../../obs-api';
 
 interface IAppState {
   loading: boolean;
@@ -61,6 +62,10 @@ export class AppService extends StatefulService<IAppState> {
   @track('app_start')
   load() {
     this.START_LOADING();
+    
+    obs.NodeObs.IPC.ConnectOrHost(process.env.SLOBS_IPC_PATH);
+    obs.NodeObs.SetWorkingDirectory(process.env.SLOBS_IPC_WORKING_DIRECTORY);
+    obs.NodeObs.OBS_API_initAPI('en-US', process.env.SLOBS_IPC_USEDATA);
 
     // We want to start this as early as possible so that any
     // exceptions raised while loading the configuration are
@@ -102,10 +107,14 @@ export class AppService extends StatefulService<IAppState> {
 
   @track('app_close')
   private shutdownHandler() {
-    this.START_LOADING();
+    this.START_LOADING();    
 
     this.ipcServerService.stopListening();
     this.tcpServerService.stopListening();
+    
+    obs.NodeObs.OBS_service_removeCallback();
+    obs.NodeObs.OBS_API_destroyOBS_API();
+    obs.NodeObs.IPC.disconnect();
 
     window.setTimeout(async () => {
       await this.sceneCollectionsService.deinitialize();

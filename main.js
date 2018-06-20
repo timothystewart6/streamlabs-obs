@@ -11,18 +11,6 @@ if (pjson.name === 'slobs-client-preview') {
   process.env.SLOBS_PREVIEW = true;
 }
 process.env.SLOBS_VERSION = pjson.version;
-function generateUUID() { // Public Domain/MIT
-  var d = new Date().getTime();
-  if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
-      d += performance.now(); //use high-precision timer if available
-  }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      var r = (d + Math.random() * 16) % 16 | 0;
-      d = Math.floor(d / 16);
-      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-  });
-}
-process.env.SLOBS_IPC_PATH = "slobs-".concat(generateUUID());
 
 ////////////////////////////////////////////////////////////////////////////////
 // Modules and other Requires
@@ -83,8 +71,23 @@ function getObs() {
 }
 
 
-function startApp() {
+function startApp() {  
   const isDevMode = (process.env.NODE_ENV !== 'production') && (process.env.NODE_ENV !== 'test');
+  
+  function generateUUID() { // Public Domain/MIT
+    var d = new Date().getTime();
+    if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
+        d += performance.now(); //use high-precision timer if available
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }
+  process.env.SLOBS_IPC_PATH = "slobs-".concat(generateUUID());
+  process.env.SLOBS_IPC_WORKING_DIRECTORY = path.join(app.getAppPath().replace('app.asar', 'app.asar.unpacked') + '/node_modules/obs-studio-node');
+  process.env.SLOBS_IPC_USEDATA = app.getPath('userData');
 
   const bt = require('backtrace-node');
 
@@ -192,9 +195,6 @@ function startApp() {
   mainWindow.on('closed', () => {
     require('node-libuiohook').stopHook();
     session.defaultSession.flushStorageData();
-    getObs().OBS_service_removeCallback();
-    getObs().OBS_API_destroyOBS_API();
-    getObs().IPC.disconnect();
     app.quit();
   });
 
@@ -282,17 +282,7 @@ function startApp() {
     // setTimeout(() => {
     //   openDevTools();
     // }, 10 * 1000);
-
-  }
-  
-  getObs().IPC.ConnectOrHost(process.env.SLOBS_IPC_PATH);
-
-  // Initialize various OBS services
-  getObs().SetWorkingDirectory(
-    path.join(app.getAppPath().replace('app.asar', 'app.asar.unpacked') + 
-              '/node_modules/obs-studio-node'));
-
-  getObs().OBS_API_initAPI('en-US', app.getPath('userData'));
+  }  
 }
 
 // We use a special cache directory for running tests
@@ -441,23 +431,6 @@ ipcMain.on('vuex-mutation', (event, mutation) => {
     });
   }
 });
-
-
-// Virtual node OBS calls:
-//
-// These are methods that appear upstream to be OBS
-// API calls, but are actually Javascript functions.
-// These should be used sparingly, and are used to
-// ensure atomic operation of a handful of calls.
-const nodeObsVirtualMethods = {
-
-  OBS_test_callbackProxy(num, cb) {
-    setTimeout(() => {
-      cb(num + 1);
-    }, 5000);
-  }
-
-};
 
 // Used for guaranteeing unique ids for objects in the vuex store
 ipcMain.on('getUniqueId', event => {

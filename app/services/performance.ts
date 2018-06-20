@@ -2,8 +2,8 @@ import Vue from 'vue';
 import { Subject } from 'rxjs/Subject';
 
 import { StatefulService, mutation } from './stateful-service';
-import * as obs from '../../obs-api';
 import electron from 'electron';
+import * as obs from '../../obs-api';
 
 interface IPerformanceState {
   CPU: number;
