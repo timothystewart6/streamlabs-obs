@@ -10,6 +10,9 @@ if (pjson.env === 'production') {
 if (pjson.name === 'slobs-client-preview') {
   process.env.SLOBS_PREVIEW = true;
 }
+if (pjson.name === 'slobs-client-ipc') {
+  process.env.SLOBS_IPC = true;
+}
 process.env.SLOBS_VERSION = pjson.version;
 function generateUUID() { // Public Domain/MIT
   var d = new Date().getTime();
