@@ -59,18 +59,6 @@ function openDevTools() {
   mainWindow.webContents.openDevTools({ mode: 'undocked' });
 }
 
-// Lazy require OBS
-let _obs;
-
-function getObs() {
-  if (!_obs) {
-    _obs = require('obs-studio-node').NodeObs;
-  }
-
-  return _obs;
-}
-
-
 function startApp() {  
   const isDevMode = (process.env.NODE_ENV !== 'production') && (process.env.NODE_ENV !== 'test');
   
