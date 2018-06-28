@@ -72,6 +72,7 @@ import { ProfanityFilterService } from 'util/profanity';
 import { I18nService } from 'services/i18n';
 import { MediaBackupService } from 'services/media-backup';
 import { OutageNotificationsService } from 'services/outage-notifications';
+import { MediaGalleryService } from 'services/media-gallery';
 
 const { ipcRenderer } = electron;
 
@@ -146,7 +147,8 @@ export class ServicesManager extends Service {
     I18nService,
     MediaBackupService,
     WebsocketService,
-    OutageNotificationsService
+    OutageNotificationsService,
+    MediaGalleryService
   };
 
   private instances: Dictionary<Service> = {};
