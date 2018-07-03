@@ -22,10 +22,15 @@ import ManageSceneCollections from 'components/windows/ManageSceneCollections.vu
 import RecentEvents from 'components/windows/RecentEvents.vue';
 import Projector from 'components/windows/Projector.vue';
 import MediaGallery from 'components/windows/MediaGallery.vue';
-import { mutation, StatefulService } from 'services/stateful-service';
+import { mutation, StatefulService } from './stateful-service';
 import electron from 'electron';
 import Vue from 'vue';
 import Util from 'services/utils';
+
+import BitGoal from 'components/widget-settings/goal/BitGoal.vue';
+import DonationGoal from 'components/widget-settings/goal/DonationGoal.vue';
+import ChatBox from 'components/widget-settings/ChatBox.vue';
+import FollowerGoal from 'components/widget-settings/goal/FollowerGoal.vue';
 
 const { ipcRenderer, remote } = electron;
 const BrowserWindow = remote.BrowserWindow;
@@ -89,7 +94,11 @@ export class WindowsService extends StatefulService<IWindowsState> {
     ManageSceneCollections,
     Projector,
     RecentEvents,
-    MediaGallery
+    MediaGallery,
+    BitGoal,
+    DonationGoal,
+    FollowerGoal,
+    ChatBox
   };
 
   private windows: Dictionary<Electron.BrowserWindow> = {};
