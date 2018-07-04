@@ -6953,9 +6953,9 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-"obs-studio-node@https://github.com/stream-labs/obs-studio-node/releases/download/v0.0.41/iojs-v2.0.1-signed.tar.gz":
+"obs-studio-node@https://github.com/stream-labs/obs-studio-node/releases/download/v0.1.1/iojs-v2.0.1-signed.tar.gz":
   version "0.0.1"
-  resolved "https://github.com/stream-labs/obs-studio-node/releases/download/v0.0.41/iojs-v2.0.1-signed.tar.gz#6fb4aac9c721aafcd372316b670ca45464d6d04c"
+  resolved "https://github.com/stream-labs/obs-studio-node/releases/download/v0.1.1/iojs-v2.0.1-signed.tar.gz#582072f383754e86308123119868fdeaffe512e2"
 
 observable-to-promise@^0.5.0:
   version "0.5.0"
@@ -10025,10 +10025,6 @@ vue-style-loader@^4.0.1:
   dependencies:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
-
-vue-tabs-component@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/vue-tabs-component/-/vue-tabs-component-1.4.0.tgz#05f6a82b05f1a29ae3ff23aaabf3c7bd1d9e57f0"
 
 vue-template-compiler@^2.5.16:
   version "2.5.16"
