@@ -118,10 +118,10 @@ export class SourceFiltersService extends Service {
     const source = this.sourcesService.getSource(sourceId);
     const obsFilter = obs.FilterFactory.create(filterType, filterName);
     source.getObsInput().addFilter(obsFilter);
+    if (settings) obsFilter.update(settings);
     // There is now 2 references to the filter at that point
     // We need to release one
     obsFilter.release();
-    if (settings) obsFilter.update(settings);
     return obsFilter;
   }
 
