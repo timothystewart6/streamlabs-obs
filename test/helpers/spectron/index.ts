@@ -117,7 +117,8 @@ export function useSpectron(options: ITestRunnerOptions) {
   async function stopApp() {
     await context.app.stop();
     await new Promise((resolve) => {
-      rimraf(context.cacheDir, resolve);
+      // rimraf(context.cacheDir, resolve);
+      resolve();
     });
     appIsRunning = false;
   }
