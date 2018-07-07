@@ -40,6 +40,10 @@ export class Display {
   private selectionSubscription: Subscription;
 
   sourceId: string;
+  
+  boundDestroy: any;
+  boundClose: any;
+  displayDestroyed: boolean;
 
   constructor(public name: string, options: IDisplayOptions = {}) {
     this.windowId = Utils.isChildWindow() ? 'child' : 'main';
@@ -58,6 +62,7 @@ export class Display {
         name
       );
     }
+    this.displayDestroyed = false;
 
     this.selectionSubscription = this.selectionService.updated.subscribe(() => {
       this.switchGridlines(this.selectionService.getSize() <= 1);
@@ -71,12 +76,10 @@ export class Display {
 
     this.outputRegionCallbacks = [];
 
-    this.boundDestroy = this.destroy.bind(this);
+    this.boundClose = this.close.bind(this);
 
-    remote.getCurrentWindow().on('close', this.boundDestroy);
+    remote.getCurrentWindow().on('close', this.boundClose);
   }
-
-  boundDestroy: any;
 
   /**
    * Will keep the display positioned on top of the passed HTML element
@@ -126,11 +129,18 @@ export class Display {
     if (this.outputRegionCallbacks.length) this.refreshOutputRegion();
   }
 
-  destroy() {
-    remote.getCurrentWindow().removeListener('close', this.boundDestroy);
-    nodeObs.OBS_content_destroyDisplay(this.name);
+  close() {
     if (this.trackingInterval) clearInterval(this.trackingInterval);
     if (this.selectionSubscription) this.selectionSubscription.unsubscribe();
+    if (!this.displayDestroyed) {
+      nodeObs.OBS_content_destroyDisplay(this.name);
+      this.displayDestroyed = true;
+    }
+  }
+
+  destroy() {
+    remote.getCurrentWindow().removeListener('close', this.boundClose);
+    close();
   }
 
   onOutputResize(cb: (region: IRectangle) => void) {
