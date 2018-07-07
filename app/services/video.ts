@@ -76,7 +76,7 @@ export class Display {
 
     this.outputRegionCallbacks = [];
 
-    this.boundClose = this.close.bind(this);
+    this.boundClose = this.remoteClose.bind(this);
 
     remote.getCurrentWindow().on('close', this.boundClose);
   }
@@ -129,7 +129,7 @@ export class Display {
     if (this.outputRegionCallbacks.length) this.refreshOutputRegion();
   }
 
-  close() {
+  remoteClose() {
     if (this.trackingInterval) clearInterval(this.trackingInterval);
     if (this.selectionSubscription) this.selectionSubscription.unsubscribe();
     if (!this.displayDestroyed) {
@@ -140,7 +140,7 @@ export class Display {
 
   destroy() {
     remote.getCurrentWindow().removeListener('close', this.boundClose);
-    close();
+    this.remoteClose();
   }
 
   onOutputResize(cb: (region: IRectangle) => void) {
